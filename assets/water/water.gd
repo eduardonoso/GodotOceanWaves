@@ -83,6 +83,8 @@ func _process(delta : float) -> void:
 
 func _setup_wave_generator() -> void:
 	if parameters.size() <= 0: return
+	# Headless editor imports have no rendering device. Defer GPU setup until one exists.
+	if RenderingServer.get_rendering_device() == null: return
 	for param in parameters:
 		param.should_generate_spectrum = true
 
@@ -111,6 +113,7 @@ func _update_scales_uniform() -> void:
 
 func _update_water(delta : float) -> void:
 	if wave_generator == null: _setup_wave_generator()
+	if wave_generator == null: return
 	wave_generator.update(delta, parameters)
 
 func _notification(what: int) -> void:
